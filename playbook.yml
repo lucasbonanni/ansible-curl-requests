@@ -1,0 +1,28 @@
+---
+- name: Make cURL requests with Ansible
+  hosts: localhost
+  gather_facts: false
+
+  vars:
+    http_method: "GET"
+    url: "http://example.com/api/orders/"
+    authorization_header: "Bearer <YOUR_TOKEN>"
+    ids:
+      - 123
+      - 456
+      - 789
+
+  tasks:
+    - name: Make cURL requests
+      uri:
+        method: "{{ http_method }}"
+        url: "{{ url }}{{ item }}"
+        headers:
+          Authorization: "{{ authorization_header }}"
+      with_items: "{{ ids }}"
+      register: response
+
+    - name: Print cURL response
+      debug:
+        msg: "{{ item.stdout }}"
+      with_items: "{{ response.results }}"
